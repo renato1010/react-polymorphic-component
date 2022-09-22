@@ -3,7 +3,7 @@ import { ElementType, PropsWithChildren, ComponentPropsWithoutRef } from "react"
 type PolyButtonV1Props<C extends ElementType> = {
   as?: C;
 } & ComponentPropsWithoutRef<C>;
-const PolyButtonV1 = <C extends ElementType>({
+const PolyButtonV1 = <C extends ElementType = "button">({
   as,
   children,
   ...restProps

@@ -54,7 +54,7 @@ like [Chakra UI](https://chakra-ui.com/) and [React-Bootstrap](https://react-boo
 
 <details>
   <summary>
-    Version 0
+    Version 0: Basic Start
   </summary>
 
 ```ts
@@ -111,9 +111,9 @@ No attribute support, e.g:
 
 </details>
 
-<details open="true" >
+<details >
   <summary>
-    Version 1
+    Version 1: Generic types
   </summary>
 
 **New Requirements:**
@@ -193,5 +193,30 @@ const PolyButtonV1 = <C extends ElementType>({
 
 Now our component only accepts valid elements for "as" prop and is aware of that "as"  
 selection element props... Great!
+
+If we don't pass the "as" property, our **PolyButtonV1** correctly creates a  
+"button" element. but if we try passing an "href" attribute the component won't show any error, that's bad🙍🏽.  
+The solution is quite simple, we just need to pass a generic type by default.
+
+<br />
+<img src="https://losormorpino-public-media.s3.us-east-2.amazonaws.com/w310lty.png"  />
+<br />
+
+Now 👀
+
+<br />
+<img src="https://losormorpino-public-media.s3.us-east-2.amazonaws.com/ub00lqg.gif"   />
+
+Now we are talking... if no prop "as" is passed our component renders by default a "button" element...  
+and of course, it will flag the error with any attribute that does not match that element. 🫁
+
+</details>
+
+<details open >
+  <summary>Version 2: Component should own props</summary>
+
+**New Requirements:**
+
+- The component must be able to handle its own props, such as color, in a type-safe way, of course.!
 
 </details>
