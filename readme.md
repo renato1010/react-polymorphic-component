@@ -212,11 +212,45 @@ and of course, it will flag the error with any attribute that does not match tha
 
 </details>
 
-<details open >
-  <summary>Version 2: Component should own props</summary>
+<details >
+  <summary>Version 2: Component must handle own props</summary>
 
 **New Requirements:**
 
 - The component must be able to handle its own props, such as color, in a type-safe way, of course.!
 
+Let say our component will accept **color** prop. Color will be a pre-made list of colors
+let say "primary" and "accent"
+
+_small refactoring_
+<br />
+<img src="https://losormorpino-public-media.s3.us-east-2.amazonaws.com/8s00ea7.png"  />
+<br />
+
+An additional precaution: it is possible that some values that exist in **ComponentPropsWithoutRef<C>** also exist  
+in the definition of the props type of our component.
+Instead of relying on our **color** prop to override what's coming from ComponentPropsWithoutRef<C>, we better remove
+any type that also exit in our component types definition.
+
+So, guess what... another refactoring
+
+```tsx
+type PolyColor = "primary" | "accent";
+type PolyButtonOwnProps<C extends ElementType> = { as?: C; color: PolyColor };
+type PolyButtonV2Props<C extends ElementType> = PolyButtonOwnProps<C> &
+  Omit<ComponentPropsWithoutRef<C>, keyof PolyButtonOwnProps<C>>;
+
+const PolyButtonV2 = <C extends ElementType = "button">({
+  as,
+  children,
+  style,
+  color,
+  ...restProps
+}: PropsWithChildren<PolyButtonV2Props<C>>) => {
+```
+
+</details>
+
+<details>
+  <summary>Version 3: Make component reusable, work with any component</summary>
 </details>
