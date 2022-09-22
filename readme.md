@@ -251,6 +251,61 @@ const PolyButtonV2 = <C extends ElementType = "button">({
 
 </details>
 
-<details>
+<details >
   <summary>Version 3: Make component reusable, work with any component</summary>
+
+**New requirements: **
+
+- If we want to make the component reusable, will need remove the **PolyButtonOwnProps**  
+  and represent that with a generic, so anyone can pass in whatever component props they need
+
+```tsx
+type AsProp<C extends ElementType> = { as?: C };
+type PolyButtonOwnProps<C extends ElementType, PassedProps = {}> = AsProp<C> & PassedProps;
+type PolyButtonV3Props<C extends ElementType> = PropsWithChildren<PolyButtonOwnProps<C>> &
+  Omit<ComponentPropsWithoutRef<C>, keyof PolyButtonOwnProps<C>>;
+
+const PolyButtonV3 = <C extends ElementType = "button">({
+  as,
+  children,
+  style,
+  color,
+  ...restProps
+}: PolyButtonV3Props<C>) => {
+```
+
+Here we separate **AsProp** the type for "as" prop and **PassedProps** are the others props
+passed to the component(besides as);
+
+After refactoring you have:
+
+```tsx
+type AsProp<C extends ElementType> = { as?: C };
+type PolyButtonOwnProps<C extends ElementType, PassedProps = {}> = AsProp<C> & PassedProps;
+type PolyButtonV3Props<C extends ElementType, PassedProps = {}> = PropsWithChildren<
+  PolyButtonOwnProps<C, PassedProps>
+> &
+  Omit<ComponentPropsWithoutRef<C>, keyof PolyButtonOwnProps<C>>;
+
+const PolyButtonV3 = <C extends ElementType = "button", PassedProps = {}>({
+  as,
+  children,
+  style,
+  color,
+  ...restProps
+}: PolyButtonV3Props<C, PassedProps>) => {
+  const PolyButton = as ?? "button";
+  const outStyle = color ? { ...style, color: color === "primary" ? "#058ed9" : "#df6066" } : style;
+  return (
+    <PolyButton style={outStyle} {...restProps}>
+      {children}
+    </PolyButton>
+  );
+};
+```
+
+Now if you build another component, you can give it Polymorphic powers like this:
+
+**PolyButtonV3Props<C,MyNewComponentPropsType>**
+
 </details>
