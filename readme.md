@@ -310,7 +310,7 @@ Now if you build another component, you can give it Polymorphic powers like this
 
 </details>
 
-<details open >
+<details >
   <summary>Version 4: Component should support Refs</summary>
 
 Remember in Version #1 when we implemented the **ComponentPropsWithoutRef**, you know
