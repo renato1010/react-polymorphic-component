@@ -309,3 +309,95 @@ Now if you build another component, you can give it Polymorphic powers like this
 **PolyButtonV3Props<C,MyNewComponentPropsType>**
 
 </details>
+
+<details open >
+  <summary>Version 4: Component should support Refs</summary>
+
+Remember in Version #1 when we implemented the **ComponentPropsWithoutRef**, you know
+first we look for just ComponentProps, but the types documentation recommended the one  
+ with the ...WithoutRef, well our next step deal with **refs**
+
+The way **refs** works in React is that you just don't pass "ref" as prop to custom  
+ components, like any other prop.
+Instead you handle "refs" in your functional components by using **forwardRef** function
+
+lets code this... 🧑‍💻
+
+<br />
+ <img src="https://losormorpino-public-media.s3.us-east-2.amazonaws.com/id002hs.gif"  />
+<br />
+
+> Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?
+
+We need to type the "ref" extra prop from "forwardRef"
+
+<br />
+ <img src="https://losormorpino-public-media.s3.us-east-2.amazonaws.com/zl00l8p.png"  />
+<br />
+
+But what we really need is the type for "ref" prop.
+
+<br />
+ <img src="https://losormorpino-public-media.s3.us-east-2.amazonaws.com/w100ama.png"  />
+<br />
+
+Cool! now our component can take a "ref" prop, but if you place your cursor over the
+**ref={}** you'll notice:
+
+```tsx
+React.RefAttributes<unknown>.ref?: React.Ref<unknown>
+```
+
+That **unknown** is a sign of weak typing... let's fix it
+
+- The types for other props of the PolyButtonV4 still reference the **PolyButtonV4Props**
+- Lets create a new type **PolymorphicComponentPropWithRef** that just be the union of
+  of PolyButtonV4Props and the "ref" prop
+
+```tsx
+type PolymorphicComponentPropWithRef<C extends ElementType, PassedProps = {}> = PolyButtonV4Props<
+  C,
+  PassedProps
+> & { ref?: PolymorphicRef<C> };
+```
+
+Then, we change component props to reference this new PolymorphicComponentPropWithRef type
+
+```tsx
+type PolyButtonProps<C extends ElementType> = PolymorphicComponentPropWithRef<
+  C,
+  { color: PolyColor | "black" }
+>;
+const PolyButtonV4 = forwardRef(
+  <C extends ElementType = "button", PassedProps = {}>(
+    { as, children, style, color, ...restProps }: PolyButtonProps<C>,
+    ref?: PolymorphicRef<C>
+  ) => {
+
+```
+
+Finally, create a type annotation for the component:
+
+```tsx
+type PolymorphicButton = <C extends ElementType = "button">(props: PolyButtonProps<C>) => ReactElement | null;
+```
+
+Type the component with this new type
+
+```tsx
+const PolyButtonV4: PolymorphicButton = forwardRef(
+  <C extends ElementType = "button", PassedProps = {}>(
+    { as, children, style, color, ...restProps }: PolyButtonProps<C>,
+    ref?: PolymorphicRef<C>
+  ) => {
+    const PolyButton = as ?? "button";
+```
+
+And BUMMM 🚀 Now we got a fully typed **polymorphic** component because the "ref"
+property infer the correct type dependant on the "as" element of choice
+
+<br />
+ <img src="https://losormorpino-public-media.s3.us-east-2.amazonaws.com/cz000uk.gif"  />
+<br />
+
+</details>
